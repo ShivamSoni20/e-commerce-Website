@@ -340,6 +340,151 @@
         font-size: 0.9rem;
       }
     }
+    
+    /* Footer Styles */
+    .footer {
+      background: var(--primary-gradient);
+      color: white;
+      padding: 60px 0 20px;
+      margin-top: 80px;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .footer h5 {
+      font-weight: bold;
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+    
+    .footer-links {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+    
+    .footer-links a {
+      color: rgba(255,255,255,0.9);
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+    
+    .footer-links a:hover {
+      color: white;
+      transform: translateX(5px);
+      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+    
+    .footer-links i {
+      margin-right: 10px;
+      width: 20px;
+    }
+    
+    .social-icons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .social-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+    
+    .social-icon:hover {
+      background: white;
+      color: #667eea;
+      transform: translateY(-5px) rotate(360deg);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .contact-info {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .contact-info li {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .contact-info i {
+      width: 25px;
+      height: 25px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+    
+    .newsletter-form {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .newsletter-form input {
+      flex: 1;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 50px;
+      outline: none;
+    }
+    
+    .newsletter-form button {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 50px;
+      background: white;
+      color: #667eea;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .newsletter-form button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.2);
+      margin-top: 40px;
+      padding-top: 20px;
+      text-align: center;
+      color: rgba(255,255,255,0.8);
+    }
+    
+    @media (max-width: 768px) {
+      .footer {
+        padding: 40px 0 20px;
+      }
+      
+      .newsletter-form {
+        flex-direction: column;
+      }
+      
+      .newsletter-form button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -758,6 +903,126 @@
 
   // Initial render
   renderProducts();
+  
+  // Newsletter subscription
+  function subscribeNewsletter() {
+    const emailInput = document.getElementById('newsletter-email');
+    const email = emailInput.value.trim();
+    
+    if (email && email.includes('@')) {
+      alert(`Thank you for subscribing!\n\nWe've added ${email} to our newsletter list.`);
+      emailInput.value = '';
+    } else {
+      alert('Please enter a valid email address.');
+    }
+  }
 </script>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="row g-4">
+      <!-- About Section -->
+      <div class="col-md-3">
+        <h5><i class="fas fa-shopping-bag me-2"></i>MyShop</h5>
+        <p class="text-white-50">Your one-stop destination for quality products at amazing prices. Shop with confidence and enjoy the best deals!</p>
+        <div class="social-icons">
+          <a href="#" class="social-icon" title="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" class="social-icon" title="Twitter">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#" class="social-icon" title="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#" class="social-icon" title="LinkedIn">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Help & Support Section -->
+      <div class="col-md-3">
+        <h5><i class="fas fa-question-circle me-2"></i>Help & Support</h5>
+        <ul class="footer-links">
+          <li><a href="#"><i class="fas fa-chevron-right"></i>FAQ</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i>Shipping Information</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i>Returns & Exchanges</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i>Order Tracking</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i>Size Guide</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i>Payment Options</a></li>
+        </ul>
+      </div>
+      
+      <!-- Quick Links Section -->
+      <div class="col-md-3">
+        <h5><i class="fas fa-link me-2"></i>Quick Links</h5>
+        <ul class="footer-links">
+          <li><a href="#"><i class="fas fa-chevron-right"></i>About Us</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i>Privacy Policy</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i>Terms & Conditions</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i>Careers</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i>Blog</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i>Affiliate Program</a></li>
+        </ul>
+      </div>
+      
+      <!-- Contact Section -->
+      <div class="col-md-3">
+        <h5><i class="fas fa-envelope me-2"></i>Contact Us</h5>
+        <ul class="contact-info">
+          <li>
+            <i class="fas fa-map-marker-alt"></i>
+            <span>123 Shopping Street, NY 10001</span>
+          </li>
+          <li>
+            <i class="fas fa-phone"></i>
+            <span>+1 (555) 123-4567</span>
+          </li>
+          <li>
+            <i class="fas fa-envelope"></i>
+            <span>support@myshop.com</span>
+          </li>
+          <li>
+            <i class="fas fa-clock"></i>
+            <span>Mon - Fri: 9AM - 6PM</span>
+          </li>
+        </ul>
+        
+        <!-- Newsletter -->
+        <div class="mt-4">
+          <h6><i class="fas fa-bell me-2"></i>Newsletter</h6>
+          <p class="text-white-50 small">Subscribe for exclusive deals!</p>
+          <div class="newsletter-form">
+            <input type="email" id="newsletter-email" placeholder="Your email" />
+            <button onclick="subscribeNewsletter()">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+      <div class="row">
+        <div class="col-md-6 text-md-start text-center mb-2">
+          <p class="mb-0">&copy; 2025 MyShop. All rights reserved.</p>
+        </div>
+        <div class="col-md-6 text-md-end text-center">
+          <p class="mb-0">
+            <i class="fas fa-credit-card me-2"></i>
+            <i class="fab fa-cc-visa me-2"></i>
+            <i class="fab fa-cc-mastercard me-2"></i>
+            <i class="fab fa-cc-paypal me-2"></i>
+            <i class="fab fa-cc-amex"></i>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
