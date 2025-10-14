@@ -485,6 +485,103 @@
         width: 100%;
       }
     }
+    
+    /* Auth Modal Styles */
+    .auth-modal .modal-content {
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    
+    .auth-tabs {
+      display: flex;
+      border-bottom: 2px solid #f0f0f0;
+      margin-bottom: 20px;
+    }
+    
+    .auth-tab {
+      flex: 1;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      font-weight: 600;
+      color: #666;
+      transition: all 0.3s;
+    }
+    
+    .auth-tab.active {
+      color: #667eea;
+      border-bottom: 3px solid #667eea;
+    }
+    
+    .auth-form {
+      display: none;
+    }
+    
+    .auth-form.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .alert {
+      border-radius: 10px;
+      border: none;
+    }
+    
+    .user-dropdown {
+      position: relative;
+    }
+    
+    .user-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      min-width: 200px;
+      display: none;
+      z-index: 1000;
+      margin-top: 10px;
+    }
+    
+    .user-menu.show {
+      display: block;
+      animation: fadeInDown 0.3s;
+    }
+    
+    .user-menu-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: #333;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .user-menu-item:hover {
+      background: #f8f9fa;
+      padding-left: 25px;
+    }
+    
+    .user-menu-item:last-child {
+      border-bottom: none;
+    }
+    
+    .user-menu-item i {
+      margin-right: 10px;
+      width: 20px;
+    }
   </style>
 </head>
 <body>
@@ -492,7 +589,33 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
   <a class="navbar-brand" href="#"><i class="fas fa-shopping-bag me-2"></i>MyShop</a>
   <div class="ms-auto d-flex gap-3 align-items-center">
-    <span class="text-white d-none d-md-inline"><i class="fas fa-user me-2"></i>Welcome, Guest</span>
+    <!-- Guest View -->
+    <div id="guest-view" class="d-flex gap-3 align-items-center">
+      <span class="text-white d-none d-md-inline"><i class="fas fa-user me-2"></i>Welcome, Guest</span>
+      <button class="btn btn-outline-light" onclick="showAuthModal()">Login / Sign Up</button>
+    </div>
+    
+    <!-- User View -->
+    <div id="user-view" class="d-flex gap-3 align-items-center" style="display: none !important;">
+      <div class="user-dropdown">
+        <button class="btn btn-outline-light" onclick="toggleUserMenu()">
+          <i class="fas fa-user-circle me-2"></i><span id="user-name">User</span>
+          <i class="fas fa-chevron-down ms-2"></i>
+        </button>
+        <div id="user-menu" class="user-menu">
+          <div class="user-menu-item" onclick="viewProfile()">
+            <i class="fas fa-user"></i>My Profile
+          </div>
+          <div class="user-menu-item" onclick="viewOrders()">
+            <i class="fas fa-box"></i>My Orders
+          </div>
+          <div class="user-menu-item" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt"></i>Logout
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <button class="btn btn-outline-light position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
       <i class="fas fa-shopping-cart me-2"></i>Cart 
       <span id="cart-count" class="badge bg-danger position-absolute top-0 start-100 translate-middle cart-badge">0</span>
@@ -610,7 +733,87 @@
   </div>
 </div>
 
+<!-- Auth Modal -->
+<div class="modal fade auth-modal" id="authModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-lock me-2"></i>Account Access</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Alert Messages -->
+        <div id="auth-alert" class="alert" style="display: none;"></div>
+        
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+          <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+        </div>
+        
+        <!-- Login Form -->
+        <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+          <div class="mb-3">
+            <label class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
+            <input type="email" class="form-control" id="login-email" placeholder="Enter your email" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label"><i class="fas fa-lock me-2"></i>Password</label>
+            <input type="password" class="form-control" id="login-password" placeholder="Enter your password" required>
+          </div>
+          <div class="mb-3 text-end">
+            <a href="#" class="text-decoration-none" onclick="showForgotPassword(event)">Forgot Password?</a>
+          </div>
+          <button type="submit" class="btn btn-primary w-100" id="login-btn">
+            <i class="fas fa-sign-in-alt me-2"></i>Login
+          </button>
+        </form>
+        
+        <!-- Sign Up Form -->
+        <form id="signup-form" class="auth-form" onsubmit="handleSignup(event)">
+          <div class="mb-3">
+            <label class="form-label"><i class="fas fa-user me-2"></i>Full Name</label>
+            <input type="text" class="form-control" id="signup-name" placeholder="Enter your full name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
+            <input type="email" class="form-control" id="signup-email" placeholder="Enter your email" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label"><i class="fas fa-lock me-2"></i>Password</label>
+            <input type="password" class="form-control" id="signup-password" placeholder="Create a password (min 6 characters)" required minlength="6">
+          </div>
+          <div class="mb-3">
+            <label class="form-label"><i class="fas fa-lock me-2"></i>Confirm Password</label>
+            <input type="password" class="form-control" id="signup-confirm" placeholder="Confirm your password" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100" id="signup-btn">
+            <i class="fas fa-user-plus me-2"></i>Create Account
+          </button>
+        </form>
+        
+        <!-- Forgot Password Form -->
+        <form id="forgot-form" class="auth-form" onsubmit="handleForgotPassword(event)" style="display: none;">
+          <div class="mb-3">
+            <label class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
+            <input type="email" class="form-control" id="forgot-email" placeholder="Enter your email" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100" id="forgot-btn">
+            <i class="fas fa-paper-plane me-2"></i>Send Reset Link
+          </button>
+          <button type="button" class="btn btn-outline-secondary w-100 mt-2" onclick="backToLogin()">
+            <i class="fas fa-arrow-left me-2"></i>Back to Login
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Supabase JS Client - Load before config -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 <script>
   const products = [
     {
@@ -904,6 +1107,15 @@
   // Initial render
   renderProducts();
   
+  // Initialize authentication on page load
+  // Wait for DOM to be fully loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAuth);
+  } else {
+    // DOM is already loaded
+    initAuth();
+  }
+  
   // Newsletter subscription
   function subscribeNewsletter() {
     const emailInput = document.getElementById('newsletter-email');
@@ -915,6 +1127,283 @@
     } else {
       alert('Please enter a valid email address.');
     }
+  }
+  
+  // ============================================
+  // AUTHENTICATION FUNCTIONS
+  // ============================================
+  
+  let currentUser = null;
+  let authModal = null;
+  
+  // Initialize authentication
+  async function initAuth() {
+    try {
+      // Check if auth object exists
+      if (typeof auth === 'undefined') {
+        console.error('Auth object not found. Make sure supabase-config.js is loaded.');
+        return;
+      }
+      
+      authModal = new bootstrap.Modal(document.getElementById('authModal'));
+      
+      // Check for existing session
+      const session = await auth.getSession();
+      if (session && session.user) {
+        currentUser = session.user;
+        updateUIForUser(currentUser);
+      }
+      
+      // Listen for auth state changes
+      auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          currentUser = session.user;
+          updateUIForUser(currentUser);
+        } else if (event === 'SIGNED_OUT') {
+          currentUser = null;
+          updateUIForGuest();
+        }
+      });
+    } catch (error) {
+      console.error('Error initializing auth:', error);
+    }
+  }
+  
+  // Show auth modal
+  function showAuthModal() {
+    authModal.show();
+  }
+  
+  // Switch between login/signup tabs
+  function switchAuthTab(tab) {
+    // Update tabs
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Update forms
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    
+    if (tab === 'login') {
+      document.getElementById('login-form').classList.add('active');
+    } else if (tab === 'signup') {
+      document.getElementById('signup-form').classList.add('active');
+    }
+    
+    // Clear alert
+    hideAlert();
+  }
+  
+  // Handle login
+  async function handleLogin(event) {
+    event.preventDefault();
+    
+    try {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const btn = document.getElementById('login-btn');
+      
+      // Validate inputs
+      if (!email || !password) {
+        showAlert('danger', 'Please enter both email and password.');
+        return;
+      }
+      
+      // Disable button and show loading
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Logging in...';
+      
+      const result = await auth.signIn(email, password);
+      
+      if (result.success) {
+        showAlert('success', 'Login successful! Welcome back.');
+        setTimeout(() => {
+          authModal.hide();
+          document.getElementById('login-form').reset();
+          hideAlert();
+        }, 1000);
+      } else {
+        showAlert('danger', result.error || 'Login failed. Please check your credentials.');
+      }
+      
+      // Re-enable button
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Login';
+    } catch (error) {
+      console.error('Login error:', error);
+      showAlert('danger', 'An unexpected error occurred. Please try again.');
+      document.getElementById('login-btn').disabled = false;
+      document.getElementById('login-btn').innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Login';
+    }
+  }
+  
+  // Handle signup
+  async function handleSignup(event) {
+    event.preventDefault();
+    
+    try {
+      const name = document.getElementById('signup-name').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      const confirm = document.getElementById('signup-confirm').value;
+      const btn = document.getElementById('signup-btn');
+      
+      // Validate inputs
+      if (!name || !email || !password || !confirm) {
+        showAlert('danger', 'Please fill in all fields.');
+        return;
+      }
+      
+      // Validate passwords match
+      if (password !== confirm) {
+        showAlert('danger', 'Passwords do not match!');
+        return;
+      }
+      
+      // Validate password length
+      if (password.length < 6) {
+        showAlert('danger', 'Password must be at least 6 characters long.');
+        return;
+      }
+      
+      // Disable button and show loading
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating account...';
+      
+      const result = await auth.signUp(email, password, name);
+      
+      if (result.success) {
+        showAlert('success', 'Account created! Please check your email to verify your account.');
+        setTimeout(() => {
+          switchAuthTab('login');
+          document.getElementById('signup-form').reset();
+          hideAlert();
+        }, 2000);
+      } else {
+        showAlert('danger', result.error || 'Signup failed. Please try again.');
+      }
+      
+      // Re-enable button
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-user-plus me-2"></i>Create Account';
+    } catch (error) {
+      console.error('Signup error:', error);
+      showAlert('danger', 'An unexpected error occurred. Please try again.');
+      document.getElementById('signup-btn').disabled = false;
+      document.getElementById('signup-btn').innerHTML = '<i class="fas fa-user-plus me-2"></i>Create Account';
+    }
+  }
+  
+  // Show forgot password form
+  function showForgotPassword(event) {
+    event.preventDefault();
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    document.getElementById('forgot-form').style.display = 'block';
+    document.getElementById('forgot-form').classList.add('active');
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  }
+  
+  // Back to login
+  function backToLogin() {
+    document.getElementById('forgot-form').style.display = 'none';
+    document.getElementById('forgot-form').classList.remove('active');
+    document.getElementById('login-form').classList.add('active');
+    document.querySelectorAll('.auth-tab')[0].classList.add('active');
+    hideAlert();
+  }
+  
+  // Handle forgot password
+  async function handleForgotPassword(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('forgot-email').value;
+    const btn = document.getElementById('forgot-btn');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+    
+    const result = await auth.resetPassword(email);
+    
+    if (result.success) {
+      showAlert('success', 'Password reset link sent! Check your email.');
+      setTimeout(() => {
+        backToLogin();
+        document.getElementById('forgot-form').reset();
+      }, 2000);
+    } else {
+      showAlert('danger', result.error || 'Failed to send reset link.');
+    }
+    
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Send Reset Link';
+  }
+  
+  // Handle logout
+  async function handleLogout() {
+    const result = await auth.signOut();
+    if (result.success) {
+      alert('You have been logged out successfully.');
+      closeUserMenu();
+    }
+  }
+  
+  // Update UI for authenticated user
+  function updateUIForUser(user) {
+    document.getElementById('guest-view').style.display = 'none';
+    document.getElementById('user-view').style.display = 'flex';
+    
+    const userName = user.user_metadata?.full_name || user.email.split('@')[0];
+    document.getElementById('user-name').textContent = userName;
+  }
+  
+  // Update UI for guest
+  function updateUIForGuest() {
+    document.getElementById('guest-view').style.display = 'flex';
+    document.getElementById('user-view').style.display = 'none';
+  }
+  
+  // Toggle user menu
+  function toggleUserMenu() {
+    const menu = document.getElementById('user-menu');
+    menu.classList.toggle('show');
+  }
+  
+  // Close user menu
+  function closeUserMenu() {
+    document.getElementById('user-menu').classList.remove('show');
+  }
+  
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    const userDropdown = document.querySelector('.user-dropdown');
+    if (userDropdown && !userDropdown.contains(e.target)) {
+      closeUserMenu();
+    }
+  });
+  
+  // View profile
+  function viewProfile() {
+    closeUserMenu();
+    alert('Profile page - Coming soon!');
+  }
+  
+  // View orders
+  function viewOrders() {
+    closeUserMenu();
+    alert('Orders page - Coming soon!');
+  }
+  
+  // Show alert message
+  function showAlert(type, message) {
+    const alert = document.getElementById('auth-alert');
+    alert.className = `alert alert-${type}`;
+    alert.textContent = message;
+    alert.style.display = 'block';
+  }
+  
+  // Hide alert message
+  function hideAlert() {
+    const alert = document.getElementById('auth-alert');
+    alert.style.display = 'none';
   }
 </script>
 
