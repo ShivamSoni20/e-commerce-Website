@@ -33,6 +33,23 @@
       text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
     }
     
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #667eea;
+      margin-right: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .brand-logo i {
+      font-size: 1.2rem;
+    }
+    
     .hero-section {
       background: var(--primary-gradient);
       color: white;
@@ -898,7 +915,7 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
-  <a class="navbar-brand" href="#"><i class="fas fa-shopping-bag me-2"></i>MyShop</a>
+  <a class="navbar-brand" href="#"><span class="brand-logo"><i class="fas fa-shopping-bag"></i></span>MyShop</a>
   <div class="ms-auto d-flex gap-3 align-items-center">
     <!-- Guest View -->
     <div id="guest-view" class="d-flex gap-3 align-items-center">
