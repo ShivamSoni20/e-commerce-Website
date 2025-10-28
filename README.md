@@ -46,19 +46,18 @@ A modern, full-featured e-commerce web application with user authentication, sho
 ```
 E-Commerce-Site/
 │
-├── index.html              # Main application file (UI + logic)
-├── supabase-config.js      # Supabase authentication configuration
-├── test-auth.html          # Authentication testing page
+├── index.html                 # Main application file (UI + logic)
+├── supabase-config.js         # Supabase authentication configuration
+├── test-auth.html             # Authentication testing page
 │
-├── README.md               # Project documentation (this file)
-├── AUTH_STATUS.md          # Authentication setup guide
-├── LOGIN_UI_IMPROVEMENTS.md # UI enhancement documentation
-├── SUPABASE_SETUP.md       # Supabase setup instructions
+├── README.md                  # Project documentation (this file)
+├── AUTH_STATUS.md             # Authentication setup guide
+├── LOGIN_UI_IMPROVEMENTS.md   # UI enhancement documentation
+├── SUPABASE_SETUP.md          # Supabase setup instructions
 │
-└── assets/
-    ├── download.jpeg       # Product images
-    ├── download sp.jpeg
-    └── download sw.jpeg
+├── download.jpeg              # Product images (stored at repo root)
+├── download sp.jpeg
+└── download sw.jpeg
 ```
 
 ## 🛠️ Tech Stack
@@ -182,10 +181,14 @@ E-Commerce-Site/
 2. Create a new project
 3. Copy your Project URL and anon key
 4. Update `supabase-config.js`:
-   ```javascript
-   const SUPABASE_URL = 'your-project-url';
-   const SUPABASE_ANON_KEY = 'your-anon-key';
-   ```
+```javascript
+const SUPABASE_URL = 'your-project-url';
+const SUPABASE_ANON_KEY = 'your-anon-key';
+```
+
+Note:
+- Replace any demo/example values in `supabase-config.js` with your own Supabase URL and anon key before deploying.
+- The password reset flow uses `redirectTo: window.location.origin + '/reset-password.html'`. This repository does not include `reset-password.html` by default. Create that page or change `redirectTo` to an existing route on your domain and handle the token if you implement a custom reset UI.
 
 ### Detailed Instructions
 See `SUPABASE_SETUP.md` for complete setup guide including:
@@ -231,6 +234,7 @@ See `LOGIN_UI_IMPROVEMENTS.md` for complete UI documentation.
 - **"Invalid login credentials"** - Verify email and check password length (min 6 chars)
 - **"Email not confirmed"** - Check spam folder or resend from Supabase dashboard
 - **Session not persisting** - Enable cookies and check browser console
+- **Password reset link 404** - Ensure `reset-password.html` exists or update the `redirectTo` URL in `supabase-config.js` and Supabase Auth redirect settings to a valid page on your domain.
 
 ### Cart Issues
 - **Cart not updating** - Check browser console for errors
